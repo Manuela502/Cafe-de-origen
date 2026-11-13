@@ -18,6 +18,19 @@ function totalVendido(ventas){
     return total;
 }
 
+console.table(ventas)
+
 console.log(totalVendido(ventas))
+
+const Unidades = (t) => Unidades.cantidad
+function unidadesVendidas(ventas){
+    let total = 0
+    for (const t of ventas){
+        total += Unidades (t)
+    }
+    return total;
+}
+
+console.log(unidadesVendidas(ventas))
 
 

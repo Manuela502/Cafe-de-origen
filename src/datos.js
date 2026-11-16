@@ -110,3 +110,5 @@ const ventas = [
 ];
 
 module.exports = ventas;
+
+console.table(ventas);

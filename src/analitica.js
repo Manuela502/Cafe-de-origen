@@ -136,9 +136,19 @@ function unidadesPorProducto(ventas){
 }console.table(unidadesPorProducto(ventas))
 
 function topProductosPorValor(ventas, k){
+  const totalProducto = ventas.reduce((acumulador, venta) => {
+    const producto = normalizacion(venta.producto)
+    acumulador [producto] = (acumulador[producto] || 0) + valorVenta(venta)
+    return acumulador
+  } )
   
+  const products = Object.entries(totalProducto)
+  const jerarquia = [...products].sort((a, b)=> )
 
 }
+
+console.log(topProductosPorValor(ventas, 3));
+
 
 module.exports = {
   totalVendido,

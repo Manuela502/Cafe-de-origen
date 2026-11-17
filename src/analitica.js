@@ -1,4 +1,4 @@
-const { useReducer } = require("react");
+
 const ventas = require("./datos");
 
 function valorVenta(venta) {
@@ -100,5 +100,52 @@ function unidadesVendidasM(ventas){
 
 function ventasPorCiudadM(ventas, ciudad){
   return ventas.filter((v)=> normalizacion(v.ciudad) === normalizacion (ciudad)).reduce((total, venta) => total + valorVenta(venta), 0 )
+}
+
+function totalPorCiudad(ventas){
+  return ventas.reduce((acumulador, venta) => {
+    let ciudadNormalizada = normalizacion(venta.ciudad);
+    let valorVentaActual = valorVenta(venta)
+    if (acumulador[ciudadNormalizada]){
+      acumulador[ciudadNormalizada] += valorVentaActual;
+   
+    }else{
+      acumulador[ciudadNormalizada] = valorVentaActual;
+    }
+
+    return acumulador;
+
+  },{});
+
+}console.table(totalPorCiudad(ventas))
+
+function unidadesPorProducto(ventas){
+  return ventas.reduce ((acumulador, venta) => {
+    let nombreProducto = venta.producto;
+    let cantidadVendida = venta.cantidad;
+
+    if (acumulador[nombreProducto]){
+      acumulador[nombreProducto] += cantidadVendida;
+    } else {
+      acumulador[nombreProducto] = cantidadVendida;
+    }
+
+    return acumulador;
+
+  }, {});
+}console.table(unidadesPorProducto(ventas))
+
+function topProductosPorValor(ventas, k){
+  
+
+}
+
+module.exports = {
+  totalVendido,
+  totalVendidoM,
+  unidadesVendidas,
+  unidadesVendidasM,
+  ventasPorCiudad,
+  ventasPorCiudadM
 }
 

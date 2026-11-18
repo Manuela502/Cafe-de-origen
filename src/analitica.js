@@ -170,11 +170,13 @@ function topProductosPorValor(ventas, k) {
 // }
 
 module.exports = {
+  normalizacion,
   totalVendido,
   totalVendidoM,
   unidadesVendidas,
   unidadesVendidasM,
   ventasPorCiudad,
-  ventasPorCiudadM
+  ventasPorCiudadM,
+  valorVenta
 }
 

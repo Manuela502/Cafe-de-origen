@@ -14,56 +14,67 @@ function totalVendido(ventas) {
 }
 console.log("Total vendido:", totalVendido(ventas));
 
-function unidadesVendidas(ventas){
+function unidadesVendidas(ventas) {
   let total = 0
-  for (const unidad of ventas){
-    if (unidad.cantidad > 0){
-    total += unidad.cantidad;  
-    } 
+  for (const unidad of ventas) {
+    if (unidad.cantidad > 0) {
+      total += unidad.cantidad;
+    }
   }
   return total;
 }
 console.log(unidadesVendidas(ventas))
 
-function ventaMayor(ventas){
+function ventaMayor(ventas) {
+  if (ventas.length === 0){
+    return null
+  }
+  
   let mayor = ventas[0]
-  for(const v of ventas){
-    if (valorVenta(v) > valorVenta(mayor)){
+
+  for (const v of ventas) {
+    if (valorVenta(v) > valorVenta(mayor)) {
       mayor = v
     }
-  } 
+  }
   return mayor
 }
 console.log(ventaMayor(ventas))
 
-function ticketPromedio(ventas){
+function ticketPromedio(ventas) {
   let total = 0
   let cantidadVentas = 0
-  for(const v of ventas){
-    if (v.cantidad > 0){
+  for (const v of ventas) {
+    if (v.cantidad > 0) {
       total += valorVenta(v)
-      cantidadVentas ++
+      cantidadVentas++
     }
-  }return total/cantidadVentas
+  } 
+  
+  if (cantidadVentas === 0) {
+       return 0;
+    }
+  
+  return total / cantidadVentas
 }
 console.log(ticketPromedio(ventas))
 
-function normalizacion (texto){
+function normalizacion(texto) {
   return texto.trim().toLowerCase()
 }
-function ventasPorCiudad(ventas, ciudad){
+function ventasPorCiudad(ventas, ciudad) {
   let total = 0
-  for (const v of ventas){
-    if (normalizacion(v.ciudad) === normalizacion(ciudad)){
+  for (const v of ventas) {
+    if (normalizacion(v.ciudad) === normalizacion(ciudad)) {
       total += valorVenta(v)
     }
 
-    }return total
-  }
-  console.log(ventasPorCiudad(ventas, "Medellín"))
+  } return total
+}
+console.log(ventasPorCiudad(ventas, "Medellín"))
 
 const unaVenta = [ventas[0]]
-const sinVenta  = []
+const sinVenta = []
 
 console.log("\nPruebas con totalVendido:");
 console.log("Prueba completa: ", totalVendido(ventas));
@@ -90,41 +101,41 @@ console.log("Prueba completa: ", ventasPorCiudad(ventas, "Medellín"));
 console.log("Prueba un elemento: ", ventasPorCiudad(unaVenta, "Medellín"));
 console.log("Prueba vacio: ", ventasPorCiudad(sinVenta, "Medellín"));
 
-function totalVendidoM(ventas){
-  return ventas.reduce((total, venta)=>total + valorVenta(venta), 0)
+function totalVendidoM(ventas) {
+  return ventas.reduce((total, venta) => total + valorVenta(venta), 0)
 }
 
-function unidadesVendidasM(ventas){
-  return ventas.reduce((total, unidad)=>total + (unidad.cantidad > 0  ? unidad.cantidad : 0), 0)
+function unidadesVendidasM(ventas) {
+  return ventas.reduce((total, unidad) => total + (unidad.cantidad > 0 ? unidad.cantidad : 0), 0)
 }
 
-function ventasPorCiudadM(ventas, ciudad){
-  return ventas.filter((v)=> normalizacion(v.ciudad) === normalizacion (ciudad)).reduce((total, venta) => total + valorVenta(venta), 0 )
+function ventasPorCiudadM(ventas, ciudad) {
+  return ventas.filter((v) => normalizacion(v.ciudad) === normalizacion(ciudad)).reduce((total, venta) => total + valorVenta(venta), 0)
 }
 
-function totalPorCiudad(ventas){
+function totalPorCiudad(ventas) {
   return ventas.reduce((acumulador, venta) => {
     let ciudadNormalizada = normalizacion(venta.ciudad);
     let valorVentaActual = valorVenta(venta)
-    if (acumulador[ciudadNormalizada]){
+    if (acumulador[ciudadNormalizada]) {
       acumulador[ciudadNormalizada] += valorVentaActual;
-   
-    }else{
+
+    } else {
       acumulador[ciudadNormalizada] = valorVentaActual;
     }
 
     return acumulador;
 
-  },{});
+  }, {});
 
-}console.table(totalPorCiudad(ventas))
+} console.table(totalPorCiudad(ventas))
 
-function unidadesPorProducto(ventas){
-  return ventas.reduce ((acumulador, venta) => {
+function unidadesPorProducto(ventas) {
+  return ventas.reduce((acumulador, venta) => {
     let nombreProducto = venta.producto;
     let cantidadVendida = venta.cantidad;
 
-    if (acumulador[nombreProducto]){
+    if (acumulador[nombreProducto]) {
       acumulador[nombreProducto] += cantidadVendida;
     } else {
       acumulador[nombreProducto] = cantidadVendida;
@@ -133,22 +144,30 @@ function unidadesPorProducto(ventas){
     return acumulador;
 
   }, {});
-}console.table(unidadesPorProducto(ventas))
+}console.table(unidadesPorProducto(ventas));
 
-function topProductosPorValor(ventas, k){
+function topProductosPorValor(ventas, k) {
   const totalProducto = ventas.reduce((acumulador, venta) => {
     const producto = normalizacion(venta.producto)
-    acumulador [producto] = (acumulador[producto] || 0) + valorVenta(venta)
+    acumulador[producto] = (acumulador[producto] || 0) + valorVenta(venta)
     return acumulador
-  } )
-  
+  }, {})
+
   const products = Object.entries(totalProducto)
-  const jerarquia = [...products].sort((a, b)=> )
+  const jerarquia = [...products].sort((a, b) => b[1] - a[1]);
+  const top = jerarquia.slice(0, k)
 
-}
+  return top
 
-console.log(topProductosPorValor(ventas, 3));
+}console.log(topProductosPorValor(ventas, 3));
 
+
+
+
+// function init() {
+//   
+//   
+// }
 
 module.exports = {
   totalVendido,

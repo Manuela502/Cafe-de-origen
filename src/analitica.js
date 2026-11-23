@@ -161,15 +161,168 @@ function topProductosPorValor(ventas, k) {
 
 }console.log(topProductosPorValor(ventas, 3));
 
+function clientesRecurrentes(ventas) {
+  const vistos = [];
+  const recurrentes = [];
+
+  for (let i = 0; i < ventas.length; i++) {
+    const cli = ventas[i].cliente;
+    if (vistos.includes(cli) && !recurrentes.includes(cli)) {
+      recurrentes.push(cli);
+    } else if (!vistos.includes(cli)) {
+      vistos.push(cli);
+    }
+  }
+
+  return recurrentes;
+}
+console.log(clientesRecurrentes(ventas)); // ["C01", "C02", "C03"]
+
+function totalCiudadCadena(ventas, ciudad) {
+  const objetivo = normalizacion(ciudad);
+  return ventas
+    .map((v) => ({ ...v, ciudad: normalizacion(v.ciudad) }))
+    .filter((v) => v.ciudad === objetivo)
+    .map((v) => valorVenta(v))
+    .reduce((acc, monto) => acc + monto, 0);
+}
+
+function totalCiudadUnaPasada(ventas, ciudad) {
+  const objetivo = normalizacion(ciudad);
+  let total = 0;
+  for (const v of ventas) {
+    if (normalizacion(v.ciudad) === objetivo) {
+      total += valorVenta(v);
+    }
+  }
+  return total;
+}
+
+function clientesRecurrentesSet(ventas) {
+  const vistos = new Set();
+  const recurrentes = new Set();
+
+  for (let i = 0; i < ventas.length; i++) {
+    const cli = ventas[i].cliente;
+
+    // Si ya estaba en vistos, ahora es recurrente; si no, lo marcamos como visto
+    if (vistos.has(cli)) {
+      recurrentes.add(cli);
+    } else {
+      vistos.add(cli);
+    }
+  }
+
+  return Array.from(recurrentes)
+  //[...recurrentes]
+}
+
+function comprasPorCliente(ventas) {
+  const conteo = new Map();
+
+  for (let i = 0; i < ventas.length; i++) {
+    const cli = ventas[i].cliente;
+    const actual = conteo.has(cli) ? conteo.get(cli) : 0;
+    conteo.set(cli, actual + 1);
+  }
+
+  return conteo;
+} console.log("conteo Map: ", comprasPorCliente(ventas))
+
+function clientesRecurrentesMap(ventas) {
+  const conteo = comprasPorCliente(ventas);
+  const recurrentes = [];
+
+  for (const [cli, cantidad] of conteo) {
+    if (cantidad > 1) {
+      recurrentes.push(cli);
+    }
+  }
+
+  return recurrentes;
+}
+
+function comboRegaloBruta(catalogo, valor) {
+  if (!Array.isArray(catalogo) || catalogo.length < 2) {
+    return null;
+  }
+
+  for (let i = 0; i < catalogo.length; i++) {
+    for (let j = i + 1; j < catalogo.length; j++) {
+      if (catalogo[i].precio + catalogo[j].precio === valor) {
+        return [catalogo[i], catalogo[j]];
+      }
+    }
+  }
+
+  return null;
+}
+
+function comboRegalo(catalogo, valor) {
+  if (!Array.isArray(catalogo) || catalogo.length < 2) {
+    return null;
+  }
+
+  const vistos = new Map(); // precio -> objeto producto
+
+  for (const item of catalogo) {
+    const complemento = valor - item.precio;
+
+    if (vistos.has(complemento)) {
+      return [vistos.get(complemento), item];
+    }
+
+    if (!vistos.has(item.precio)) {
+      vistos.set(item.precio, item);
+    }
+  }
+
+  return null;
+}
+
+function comboRegaloBruta(catalogo, valor) {
+  if (!Array.isArray(catalogo) || catalogo.length < 2) {
+    return null;
+  }
+
+  for (let i = 0; i < catalogo.length; i++) {
+    for (let j = i + 1; j < catalogo.length; j++) {
+      if (catalogo[i].precio + catalogo[j].precio === valor) {
+        return [catalogo[i], catalogo[j]];
+      }
+    }
+  }
+
+  return null;
+}
+
+function comboRegalo(catalogo, valor) {
+  if (catalogo.length < 2) {
+    return null;
+  }
+
+  const vistos = new Map(); // precio -> objeto producto
+
+  for (const item of catalogo) {
+    const complemento = valor - item.precio;
+
+    if (vistos.has(complemento)) {
+      return [vistos.get(complemento), item];
+    }
+
+    if (!vistos.has(item.precio)) {
+      vistos.set(item.precio, item);
+    }
+  }
+
+  return null;
+}
 
 
-
-// function init() {
-//   
-//   
-// }
 
 module.exports = {
+  totalCiudadCadena,
+  totalCiudadUnaPasada,
   normalizacion,
   totalVendido,
   totalVendidoM,
@@ -177,6 +330,12 @@ module.exports = {
   unidadesVendidasM,
   ventasPorCiudad,
   ventasPorCiudadM,
-  valorVenta
+  valorVenta,
+  clientesRecurrentes,
+  clientesRecurrentesSet,
+  clientesRecurrentesMap,
+  comprasPorCliente,
+  comboRegalo,
+  comboRegaloBruta
 }
 

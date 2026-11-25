@@ -8,7 +8,10 @@ const {
   ventasPorCiudad,
   ventasPorCiudadM,
   totalCiudadCadena,
-  totalCiudadUnaPasada
+  totalCiudadUnaPasada,
+  productoEstrellaPorCiudad,
+  primerClienteUnico,
+  comboRegalo
 } = require("./analitica")
 
 const estadoTotal = totalVendido(ventas) === totalVendidoM(ventas) ? "OK": "DIFERENTE"
@@ -30,7 +33,6 @@ console.log({ rCadena, rUnaPasada, iguales: rCadena === rUnaPasada });
 
 console.log("Desde aquí")
 
-const ventasDia1 = require("./datos");
 
 const {
   clientesRecurrentes,
@@ -41,9 +43,9 @@ const {
 const ordenar = (arr) => [...arr].sort();
 
 // 1. Verificar igualdad con Día 1 (12 ventas)
-const d1Orig = ordenar(clientesRecurrentes(ventasDia1));
-const d1Set = ordenar(clientesRecurrentesSet(ventasDia1));
-const d1Map = ordenar(clientesRecurrentesMap(ventasDia1));
+const d1Orig = ordenar(clientesRecurrentes(ventas));
+const d1Set = ordenar(clientesRecurrentesSet(ventas));
+const d1Map = ordenar(clientesRecurrentesMap(ventas));
 
 console.log(
   "Día 1 iguales:",
@@ -82,4 +84,14 @@ for (const n of [1000, 10000, 100000]) {
   clientesRecurrentesMap(dataset);
   console.timeEnd(`map n=${n}`);
 }
+
+
+const catalogo = require("./catalogo");
+
+
+console.log("Combo 87000:", comboRegalo(catalogo, 87000));
+console.log("Combo 61000:", comboRegalo(catalogo, 61000));
+console.log("Combo sin solucion (10000):", comboRegalo(catalogo, 10000));
+console.log("Estrella por ciudad (Dia 1):", productoEstrellaPorCiudad(ventas));
+console.log("Primer cliente unico (Dia 1):", primerClienteUnico(ventas)); // C04
 

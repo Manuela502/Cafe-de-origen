@@ -81,3 +81,22 @@ Inicio: vistos = Map {}, valor = 87000.
 2. Origen Huila 500 g (42000): complemento = 45000. ¿Está 45000 en vistos? No. Guarda 42000 -> Origen Huila 500 g.
 
 3. Origen Sierra 500 g (45000): complemento = 42000. ¿Está 42000 en vistos? Sí. Devuelve [Origen Huila 500 g, Origen Sierra 500 g].
+
+Valor = 87.000
+Inicio: vistos = Map {}, valor = 87000.
+
+    1. Origen Nariño 250 g (26000): complemento = 61000. ¿Está 61000 en vistos? No. Guarda 26000 -> Origen Nariño 250 g.
+
+    2. Origen Huila 500 g (42000): complemento = 45000. ¿Está 45000 en vistos? No. Guarda 42000 -> Origen Huila 500 g.
+
+    3. Origen Sierra 500 g (45000): complemento = 42000. ¿Está 42000 en vistos? Sí. Devuelve [Origen Huila 500 g, Origen Sierra 500 g].
+
+comboRegalo (optimizada con Map): tiempo $O(n)$ (un recorrido, búsquedas e inserciones en Map en $O(1)$ promedio) y espacio $O(n)$ (guarda hasta $n$ precios vistos).productoEstrellaPorCiudad: tiempo $O(n)$ (recorre las $n$ ventas una vez y luego las ciudades/productos acumulados) y espacio $O(n)$ en el peor caso (ciudades y productos distintos).primerClienteUnico: tiempo $O(n)$ (dos recorridos lineales sobre ventas, sin bucles anidados; las constantes se eliminan en Big O) y espacio $O(n)$ por el Map de frecuencias.
+
+ventasDiarias empieza en [320, 410, 280, 390, 510, 620, 700, 300, 290, ...]:
+
+    Posición 0 (índices 0..6, días 1–7): [320, 410, 280, 390, 510, 620, 700] → suma = 3230
+
+    Posición 1 (índices 1..7, días 2–8): entra 300, sale 320 → [410, 280, 390, 510, 620, 700, 300] → suma = 3230 + 300 - 320 = 3210
+
+    Posición 2 (índices 2..8, días 3–9): entra 290, sale 410 → [280, 390, 510, 620, 700, 300, 290] → suma = 3210 + 290 - 410 = 3090

@@ -17,9 +17,8 @@ console.log("Total vendido:", totalVendido(ventas));
 function unidadesVendidas(ventas) {
   let total = 0
   for (const unidad of ventas) {
-    if (unidad.cantidad > 0) {
       total += unidad.cantidad;
-    }
+    
   }
   return total;
 }
@@ -318,8 +317,141 @@ function comboRegalo(catalogo, valor) {
   return null;
 }
 
+function productoEstrellaPorCiudad(ventas) {
+  if (!Array.isArray(ventas) || ventas.length === 0) {
+    return {};
+  }
 
+  const porCiudad = new Map(); // ciudad -> Map(producto -> conteo)
 
+  for (const venta of ventas) {
+    const ciudad = normalizacion(venta.ciudad);
+    const producto = venta.producto;
+
+    if (!porCiudad.has(ciudad)) {
+      porCiudad.set(ciudad, new Map());
+    }
+
+    const conteoProductos = porCiudad.get(ciudad);
+    conteoProductos.set(producto, (conteoProductos.get(producto) || 0) + 1);
+  }
+
+  const resultado = {};
+
+  for (const [ciudad, conteoProductos] of porCiudad.entries()) {
+    let estrella = null;
+    let maxVeces = 0;
+
+    // Desempate: gana el primero que alcanza el máximo conteo
+    for (const [producto, veces] of conteoProductos.entries()) {
+      if (veces > maxVeces) {
+        maxVeces = veces;
+        estrella = producto;
+      }
+    }
+
+    resultado[ciudad] = estrella;
+  }
+
+  return resultado;
+}
+
+function primerClienteUnico(ventas) {
+  if (!Array.isArray(ventas) || ventas.length === 0) {
+    return null;
+  }
+
+  const frecuencias = new Map();
+
+  // Primer recorrido: contar apariciones de cada cliente
+  for (const venta of ventas) {
+    frecuencias.set(venta.cliente, (frecuencias.get(venta.cliente) || 0) + 1);
+  }
+
+  // Segundo recorrido: respetar el orden original de las ventas
+  for (const venta of ventas) {
+    if (frecuencias.get(venta.cliente) === 1) {
+      return venta.cliente;
+    }
+  }
+
+  return null;
+}
+
+function mejorSemanaBruta(dias, k) {
+  if (!Array.isArray(dias) || dias.length === 0 || k <= 0 || k > dias.length) {
+    return null;
+  }
+
+  let maxTotal = -Infinity;
+  let mejorInicio = 0;
+
+  for (let i = 0; i <= dias.length - k; i++) {
+    let suma = 0;
+    for (let j = 0; j < k; j++) {
+      suma += dias[i + j];
+    }
+    if (suma > maxTotal) {
+      maxTotal = suma;
+      mejorInicio = i;
+    }
+  }
+
+  return { inicio: mejorInicio, total: maxTotal };
+}
+
+function mejorSemana(dias, k) {
+  if (!Array.isArray(dias) || dias.length === 0 || k <= 0 || k > dias.length) {
+    return null;
+  }
+
+  let sumaVentana = 0;
+  for (let i = 0; i < k; i++) {
+    sumaVentana += dias[i];
+  }
+
+  let maxTotal = sumaVentana;
+  let mejorInicio = 0;
+
+  for (let i = k; i < dias.length; i++) {
+    // Entra el nuevo día (dias[i]) y sale el día que quedó atrás (dias[i - k])
+    sumaVentana = sumaVentana + dias[i] - dias[i - k];
+    if (sumaVentana > maxTotal) {
+      maxTotal = sumaVentana;
+      mejorInicio = i - k + 1;
+    }
+  }
+
+  return { inicio: mejorInicio, total: maxTotal };
+}
+
+function parMasCercano(catalogo, presupuesto) {
+  if (!Array.isArray(catalogo) || catalogo.length < 2 || typeof presupuesto !== "number") {
+    return null;
+  }
+
+  const ordenados = [...catalogo].sort((a, b) => a.precio - b.precio);
+  let izq = 0;
+  let der = ordenados.length - 1;
+  let mejorPar = null;
+  let mejorSuma = -Infinity;
+
+  while (izq < der) {
+    const suma = ordenados[izq].precio + ordenados[der].precio;
+
+    if (suma <= presupuesto) {
+      if (suma > mejorSuma) {
+        mejorSuma = suma;
+        mejorPar = [ordenados[izq], ordenados[der]];
+      }
+      izq++;
+    } else {
+      der--;
+    }
+  }
+
+  return mejorPar;
+}
 module.exports = {
   totalCiudadCadena,
   totalCiudadUnaPasada,
@@ -336,6 +468,9 @@ module.exports = {
   clientesRecurrentesMap,
   comprasPorCliente,
   comboRegalo,
-  comboRegaloBruta
+  comboRegaloBruta,
+  productoEstrellaPorCiudad,
+  primerClienteUnico,
+  mejorSemana, mejorSemanaBruta
 }
 
